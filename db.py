@@ -78,3 +78,12 @@ def delete_conversation(email, conversation_id):
         .eq("email", email) \
         .eq("conversation_id", conversation_id) \
         .execute()
+
+def increment_usage(email):
+    user = supabase.table("users").select("queries_used").eq("email", email).execute().data
+
+    used = user[0]["queries_used"] if user else 0
+
+    supabase.table("users").update({
+        "queries_used": used + 1
+    }).eq("email", email).execute()
