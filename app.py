@@ -332,4 +332,3 @@ if user_input:
     )
     increment_usage(email)
 
-    st.rerun()
