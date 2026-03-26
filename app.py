@@ -147,8 +147,16 @@ is_pro = is_pro_user(email)
 # LIMIT
 # =====================
 MAX_FREE = 5
-user_chats = get_conversations(email).data
-remaining = MAX_FREE - len(user_chats)
+data = get_conversations(email).data
+
+unique_conversations = set()
+
+for chat in data:
+    unique_conversations.add(chat["conversation_id"])
+
+conversation_count = len(unique_conversations)
+
+remaining = MAX_FREE - conversation_count
 
 
 # =====================
