@@ -1,6 +1,7 @@
 streamlit
 langchain
 langchain-groq
+python-jose
 python-dotenv
 streamlit-oauth
 supabase
