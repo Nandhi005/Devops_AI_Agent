@@ -62,9 +62,11 @@ def get_chat_by_conversation(email, conversation_id):
 # RENAME CHAT
 # =========================
 def rename_conversation(email, conversation_id, new_title):
-    supabase.table("chats").update({
-        "title": new_title
-    }).eq("email", email).eq("conversation_id", conversation_id).execute()
+    supabase.table("chats") \
+        .update({"title": new_title}) \
+        .eq("email", email) \
+        .eq("conversation_id", conversation_id) \
+        .execute()
 
 
 # =========================
