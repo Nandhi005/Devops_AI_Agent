@@ -8,7 +8,8 @@ from db import (
     create_user,
     is_pro_user,
     rename_conversation,
-    delete_conversation
+    delete_conversation,
+    increment_usage
 )
 from email_utils import send_payment_email
 from jose import jwt
