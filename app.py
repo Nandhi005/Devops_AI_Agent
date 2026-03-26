@@ -154,7 +154,9 @@ unique_conversations = set()
 for chat in data:
     unique_conversations.add(chat["conversation_id"])
 
-user = supabase.table("users").select("queries_used").eq("email", email).execute().data
+from db import get_user_usage
+
+user = get_user_usage(email)
 
 used = user[0]["queries_used"] if user else 0
 
