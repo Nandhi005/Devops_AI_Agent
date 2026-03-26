@@ -208,47 +208,47 @@ with st.sidebar:
             conversations[cid] = title
     for cid, title in conversations.items():
 
-    col1, col2 = st.columns([6,1])
-
-    # 👉 OPEN CHAT
-    with col1:
-        if st.button(title[:25], key=f"chat_{cid}"):
-            st.session_state.conversation_id = cid
-
-            chats = get_chat_by_conversation(email, cid).data
-            st.session_state.messages = []
-
-            for c in chats:
-                st.session_state.messages.append(("user", c["message"]))
-                st.session_state.messages.append(("bot", c["response"]))
-
-            st.rerun()
-
-    # 👉 DROPDOWN MENU (⋮)
-    with col2:
-        option = st.selectbox(
-            "",
-            ["⋮", "✏️ Rename", "🗑️ Delete"],
-            key=f"menu_{cid}"
-        )
-
-        # 👉 RENAME
-        if option == "✏️ Rename":
-            new_title = st.text_input(
-                "Rename chat",
-                value=title,
-                key=f"rename_input_{cid}"
+        col1, col2 = st.columns([6,1])
+    
+        # 👉 OPEN CHAT
+        with col1:
+            if st.button(title[:25], key=f"chat_{cid}"):
+                st.session_state.conversation_id = cid
+    
+                chats = get_chat_by_conversation(email, cid).data
+                st.session_state.messages = []
+    
+                for c in chats:
+                    st.session_state.messages.append(("user", c["message"]))
+                    st.session_state.messages.append(("bot", c["response"]))
+    
+                st.rerun()
+    
+        # 👉 DROPDOWN MENU (⋮)
+        with col2:
+            option = st.selectbox(
+                "",
+                ["⋮", "✏️ Rename", "🗑️ Delete"],
+                key=f"menu_{cid}"
             )
-
-            if st.button("Save", key=f"save_{cid}"):
-                rename_conversation(email, cid, new_title)
-                st.rerun()
-
-        # 👉 DELETE
-        elif option == "🗑️ Delete":
-            if st.button("Confirm Delete", key=f"confirm_{cid}"):
-                delete_conversation(email, cid)
-                st.rerun()
+    
+            # 👉 RENAME
+            if option == "✏️ Rename":
+                new_title = st.text_input(
+                    "Rename chat",
+                    value=title,
+                    key=f"rename_input_{cid}"
+                )
+    
+                if st.button("Save", key=f"save_{cid}"):
+                    rename_conversation(email, cid, new_title)
+                    st.rerun()
+    
+            # 👉 DELETE
+            elif option == "🗑️ Delete":
+                if st.button("Confirm Delete", key=f"confirm_{cid}"):
+                    delete_conversation(email, cid)
+                    st.rerun()
 
 
 # =====================
