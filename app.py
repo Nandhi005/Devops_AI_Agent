@@ -23,6 +23,7 @@ st.set_page_config(page_title="DevOps AI", layout="wide")
 # =====================
 # 🎨 GLOBAL CSS
 # =====================
+
 st.markdown("""
 <style>
 .stApp {
@@ -51,6 +52,20 @@ st.markdown("""
 /* Sidebar */
 section[data-testid="stSidebar"] {
     background: #020617;
+}
+
+/* Dropdown styling */
+select {
+    background-color: #1e293b !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 4px;
+}
+
+/* Buttons nicer */
+.stButton>button {
+    border-radius: 10px;
+    padding: 6px 10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -191,32 +206,47 @@ with st.sidebar:
         if cid not in conversations:
             title = chat.get("title") or chat["message"]
             conversations[cid] = title
-
     for cid, title in conversations.items():
 
-        col1, col2, col3 = st.columns([5,1,1])
+    col1, col2 = st.columns([6,1])
 
-        with col1:
-            if st.button(title[:25], key=cid):
-                st.session_state.conversation_id = cid
-                chats = get_chat_by_conversation(email, cid).data
+    # 👉 OPEN CHAT
+    with col1:
+        if st.button(title[:25], key=f"chat_{cid}"):
+            st.session_state.conversation_id = cid
 
-                st.session_state.messages = []
-                for c in chats:
-                    st.session_state.messages.append(("user", c["message"]))
-                    st.session_state.messages.append(("bot", c["response"]))
+            chats = get_chat_by_conversation(email, cid).data
+            st.session_state.messages = []
 
+            for c in chats:
+                st.session_state.messages.append(("user", c["message"]))
+                st.session_state.messages.append(("bot", c["response"]))
+
+            st.rerun()
+
+    # 👉 DROPDOWN MENU (⋮)
+    with col2:
+        option = st.selectbox(
+            "",
+            ["⋮", "✏️ Rename", "🗑️ Delete"],
+            key=f"menu_{cid}"
+        )
+
+        # 👉 RENAME
+        if option == "✏️ Rename":
+            new_title = st.text_input(
+                "Rename chat",
+                value=title,
+                key=f"rename_input_{cid}"
+            )
+
+            if st.button("Save", key=f"save_{cid}"):
+                rename_conversation(email, cid, new_title)
                 st.rerun()
 
-        with col2:
-            if st.button("✏️", key=f"rename_{cid}"):
-                new_title = st.text_input("Rename", key=f"input_{cid}")
-                if new_title:
-                    rename_conversation(email, cid, new_title)
-                    st.rerun()
-
-        with col3:
-            if st.button("🗑️", key=f"delete_{cid}"):
+        # 👉 DELETE
+        elif option == "🗑️ Delete":
+            if st.button("Confirm Delete", key=f"confirm_{cid}"):
                 delete_conversation(email, cid)
                 st.rerun()
 
