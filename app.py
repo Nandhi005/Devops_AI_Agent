@@ -154,9 +154,11 @@ unique_conversations = set()
 for chat in data:
     unique_conversations.add(chat["conversation_id"])
 
-conversation_count = len(unique_conversations)
+user = supabase.table("users").select("queries_used").eq("email", email).execute().data
 
-remaining = MAX_FREE - conversation_count
+used = user[0]["queries_used"] if user else 0
+
+remaining = MAX_FREE - used
 
 
 # =====================
@@ -326,5 +328,6 @@ if user_input:
         user_input,
         response
     )
+    increment_usage(email)
 
     st.rerun()
